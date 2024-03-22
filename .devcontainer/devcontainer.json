@@ -1,0 +1,8 @@
+{
+  "dockerFile": "../Dockerfile",
+  "extensions": [
+    "rust-lang.rust-analyzer",
+    "vadimcn.vscode-lldb"
+  ],
+  "name": "Your Container Name"
+}

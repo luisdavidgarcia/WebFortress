@@ -1,5 +1,7 @@
 fn main() {
     println!("Hello, world!");
+    let num: u8 = 5;
+    println!("The number is: {}", num);
 }
 
 #[cfg(test)]
