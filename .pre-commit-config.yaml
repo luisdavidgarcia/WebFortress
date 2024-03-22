@@ -1,28 +1,27 @@
 repos:
-  # Rust Clippy for linting
-  - repo: https://github.com/rust-lang/rust-clippy
-    rev: ''  # Use the latest revision
-    hooks:
-      - id: clippy
-
-  # Rustfmt for formatting Rust code
+  # Rustfmt for formatting Rust code, Clippy for linting, and running tests
   - repo: local
     hooks:
-      - id: rustfmt
-        name: rustfmt
-        entry: cargo fmt -- --check
+      - id: fmt
+        name: fmt
         language: system
-        types: [rust]
+        types: [file, rust]
+        entry: cargo fmt -- --check
+        pass_filenames: false
 
-  # TOML Formatter for formatting TOML files, using taplo-cli
-  - repo: https://github.com/tamasfe/taplo
-    rev: '0.5.0'  # Specify a version of taplo-cli
-    hooks:
-      - id: taplo
-        name: taplo-format
-        entry: taplo format
-        args: ["--check"]
-        files: \.toml$
+      - id: clippy
+        name: clippy
+        language: system
+        types: [file, rust]
+        entry: cargo clippy --bins --tests --examples --all -- -D rust_2018_idioms -D warnings
+        pass_filenames: false
+
+      - id: test
+        name: test
+        language: system
+        types: [file, rust]
+        entry: cargo test
+        pass_filenames: false
 
   # General house-keeping and merge conflict checks
   - repo: https://github.com/pre-commit/pre-commit-hooks
