@@ -51,6 +51,22 @@ After running the setup, you can start developing immediately. The repository is
 - `Docker/`: Contains Docker-related scripts, including a Docker environment setup script.
 - `scripts/`: Other utility scripts that might be helpful during development.
 
+## Developing with VSCode and Remote - Containers
+
+To further simplify your development process, we recommend using VSCode's Remote - Containers extension. This allows you to develop inside a Docker container, ensuring a consistent and fully-configured development environment.
+
+### Getting Started with Remote - Containers
+
+1. **Install the Remote - Containers extension** in VSCode.
+2. **Open the project folder** in VSCode.
+3. **Reopen the folder in a container:** VSCode may prompt you to reopen the folder in a container when it detects the `.devcontainer/devcontainer.json` configuration. If not, you can open the Command Palette (`Ctrl+Shift+P` or `Cmd+Shift+P` on macOS) and select "Remote-Containers: Open Folder in Container..."
+
+### Benefits
+
+- Consistent development environment across all project members.
+- No need to install project dependencies locally — everything runs inside the container.
+- Debug, run, and test your code in an environment that mirrors production.
+
 ## Using Docker
 
 Your development environment is containerized to ensure consistency. To work with Docker:
@@ -88,5 +104,4 @@ We welcome contributions to this project! Please consider the following steps:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
+This project is licensed under the GNU License - see the [LICENSE](./LICENSE) file for details.
