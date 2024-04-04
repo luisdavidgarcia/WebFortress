@@ -5,6 +5,8 @@ RustContainers is an educational project aimed at creating a straightforward con
 ## Project Members
 
 - Luis David Garcia ([lgarc120@calpoly.edu](lgarc120@calpoly.edu))
+- Paul Jarski ([pjarski@calpoly.edu](pjarski@calpoly.edu))
+- Nathan McCutchen ([nwmccutc@calpoly.edu](nwmccutc@calpoly.edu))
 
 ## Getting Started
 
