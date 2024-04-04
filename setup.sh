@@ -1,82 +1,94 @@
 #!/bin/bash
 
-# Exit immediately if a command exits with a non-zero status
+# Stop the script if any command fails
 set -e
 
+# Function to install dependencies on Linux
 install_linux_dependencies() {
     echo "Updating and installing necessary packages for Linux..."
-    sudo apt-get update && sudo apt-get install -y curl git build-essential python3-pip
+    sudo apt-get update && sudo apt-get install -y curl git build-essential python3-pip docker.io
+    sudo usermod -aG docker $USER
+    echo "NOTE: You may need to log out and log back in for Docker group changes to take effect."
 }
 
+# Function to install dependencies on macOS
 install_mac_dependencies() {
     echo "Updating and installing necessary packages for macOS..."
-    # Install Homebrew if not installed
     if ! command -v brew &>/dev/null; then
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
     fi
-    brew install curl git python3
+    brew install curl git python3 docker
+    open /Applications/Docker.app
+    echo "Please follow any additional instructions to complete Docker installation."
 }
 
+# Function to install Rust
 install_rust() {
     echo "Installing Rust and Cargo..."
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
     source "$HOME/.cargo/env" || export PATH="$HOME/.cargo/bin:$PATH"
 }
 
-install_pre_commit() {
-    echo "Installing pre-commit..."
+# Function to install and setup pre-commit
+install_and_setup_pre_commit() {
+    echo "Installing pre-commit and setting up hooks..."
     pip3 install pre-commit
-}
-
-setup_pre_commit_hooks() {
-    echo "Setting up pre-commit hooks..."
     pre-commit install
 }
 
-install_docker_linux() {
-    if ! command -v docker &>/dev/null; then
-        echo "Docker is not installed. Installing Docker for Linux..."
-        sudo apt-get install -y docker.io
-        sudo usermod -aG docker $USER
-        echo "NOTE: You may need to log out and log back in for Docker group changes to take effect."
-    else
-        echo "Docker is already installed."
-    fi
-}
-
-install_docker_mac() {
-    if ! command -v docker &>/dev/null; then
-        echo "Docker is not installed. Installing Docker for macOS..."
-        brew install --cask docker
-        open /Applications/Docker.app
-        echo "Please follow any additional instructions to complete Docker installation."
-    else
-        echo "Docker is already installed."
-    fi
-}
-
-
 # Detect OS and install dependencies
-OS="`uname`"
-case $OS in
-  'Linux')
-    install_linux_dependencies
-    install_docker_linux
-    ;;
-  'Darwin')
-    install_mac_dependencies
-    install_docker_mac
-    ;;
-  *)
-    echo "Operating system $OS not supported."
-    exit 1
-    ;;
-esac
+detect_and_install_dependencies() {
+    OS="`uname`"
+    case $OS in
+      'Linux')
+        install_linux_dependencies
+        ;;
+      'Darwin')
+        install_mac_dependencies
+        ;;
+      *)
+        echo "Operating system $OS not supported."
+        exit 1
+        ;;
+    esac
 
-# Install Rust, pre-commit, and set up hooks (common across Linux and macOS)
-command -v rustc &>/dev/null || install_rust
-command -v pre-commit &>/dev/null || install_pre_commit
-setup_pre_commit_hooks
+    install_rust
+    install_and_setup_pre_commit
+}
 
-echo "Setup completed successfully."
-echo "You can now start working on the project!"
+# Docker image and container management
+manage_docker() {
+    IMAGE_NAME="rustosprojects"
+    CONTAINER_NAME="rustos_dev"
+
+    if [[ "$(docker images -q $IMAGE_NAME 2> /dev/null)" == "" ]]; then
+      echo "Building Docker image '$IMAGE_NAME'..."
+      docker build -t $IMAGE_NAME .
+    else
+      echo "Docker image '$IMAGE_NAME' already exists."
+    fi
+
+    if [ "$(docker ps -aq -f name=^${CONTAINER_NAME}$)" ]; then
+        if [ ! "$(docker ps -q -f name=^${CONTAINER_NAME}$)" ]; then
+            echo "Starting existing container '$CONTAINER_NAME'..."
+            docker start $CONTAINER_NAME
+        else
+            echo "Container '$CONTAINER_NAME' is already running."
+        fi
+    else
+        echo "Creating and starting new container '$CONTAINER_NAME'..."
+        docker run -dit --name $CONTAINER_NAME -v "$(pwd):/workspace" $IMAGE_NAME
+    fi
+
+    echo "Attaching to the container '$CONTAINER_NAME'. Press Ctrl+D to detach."
+    docker attach $CONTAINER_NAME
+}
+
+# Main function to orchestrate setup and docker management
+main() {
+    detect_and_install_dependencies
+    manage_docker
+}
+
+# Invoke the main function
+main
