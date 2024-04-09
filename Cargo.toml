@@ -2,7 +2,6 @@
 
 members = [ 
     "crabcan",
-    "os_fundamentals",
     # List other directories/packages as needed
 ]
 resolver = "2"
