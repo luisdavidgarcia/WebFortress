@@ -1,22 +1,24 @@
 use crate::errors::Errcode;
 use crate::ipc::generate_socketpair;
+use crate::hostname::generate_hostname;
 
 use std::ffi::CString;
 use std::path::PathBuf;
 use std::os::unix::io::RawFd;
-
 #[derive(Clone)]
-pub struct ContainerOpts {
-    pub path:       CString, 
+pub struct ContainerOpts{
+    pub path:       CString,
     pub argv:       Vec<CString>,
 
+    pub hostname:   String,
     pub fd:         RawFd,
-    pub uid:        u32, 
+    pub uid:        u32,
     pub mount_dir:  PathBuf,
 }
 
-impl ContainerOpts {
-    pub fn new(command: String, uid: u32, mount_dir: PathBuf) -> Result<(ContainerOpts, (RawFd, RawFd)), Errcode> {
+impl ContainerOpts{
+    pub fn new(command: String, uid: u32, mount_dir: PathBuf)
+            -> Result<(ContainerOpts, (RawFd, RawFd)), Errcode> {
         let sockets = generate_socketpair()?;
 
         let argv: Vec<CString> = command.split_ascii_whitespace()
@@ -29,6 +31,7 @@ impl ContainerOpts {
                 argv,
                 uid,
                 mount_dir,
+                hostname: generate_hostname()?,
                 fd: sockets.1.clone(),
             },
             sockets
