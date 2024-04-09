@@ -1,6 +1,9 @@
 use crate::cli::Args;
 use crate::errors::Errcode;
 use crate::config::ContainerOpts;
+use crate::child::generate_child_process;
+use crate::namespaces::handle_child_uid_map;
+use crate::mounts::clean_mounts;
 
 use nix::unistd::Pid;
 use nix::unistd::close;
@@ -29,12 +32,16 @@ impl Container {
     }
 
     pub fn create(&mut self) -> Result<(), Errcode> {
+        let pid = generate_child_process(self.config.clone())?;
+        handle_child_uid_map(pid, self.sockets.0)?;
+        self.child_pid = Some(pid);
         log::debug!("Creation finished");
         Ok(())
     }
 
     pub fn clean_exit(&mut self) -> Result<(), Errcode>{
         log::debug!("Cleaning container");
+        clean_mounts(&self.config.mount_dir)?;
 
         if let Err(e) = close(self.sockets.0){
             log::error!("Unable to close write socket: {:?}", e);
@@ -74,21 +81,24 @@ pub fn check_linux_version() -> Result<(), Errcode> {
 pub fn start(args: Args) -> Result<(), Errcode> {
     check_linux_version()?;
     let mut container = Container::new(args)?;
+    log::debug!("Container sockets: ({}, {})", container.sockets.0, container.sockets.1);
     if let Err(e) = container.create(){
         container.clean_exit()?;
         log::error!("Error while creating container: {:?}", e);
         return Err(e);
     }
+    log::debug!("Container child PID: {:?}", container.child_pid);
+    wait_child(container.child_pid)?;
     log::debug!("Finished, cleaning & exit");
     container.clean_exit()
 }
 
-pub fn wait_child(pid: Option<Pid>) -> Result<(), Errcode> {
+pub fn wait_child(pid: Option<Pid>) -> Result<(), Errcode>{
     if let Some(child_pid) = pid {
         log::debug!("Waiting for child (pid {}) to finish", child_pid);
-        if let Err(e) = waitpid(child_pid, None) {
+        if let Err(e) = waitpid(child_pid, None){
             log::error!("Error while waiting for pid to finish: {:?}", e);
-            return Err(Errcode::ChildProcessError(1));
+            return Err(Errcode::ContainerError(1));
         }
     }
     Ok(())
