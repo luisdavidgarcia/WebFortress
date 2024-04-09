@@ -6,14 +6,15 @@ mod cli;
 mod container;
 mod ipc;
 mod config;
+mod child;
 
 use errors::exit_with_retcode;
 
 fn main() {
-    match cli::parse_args() {
+    match cli::parse_args(){
         Ok(args) => {
             log::info!("{:?}", args);
-            exit_with_retcode(container::start(args));
+            exit_with_retcode(container::start(args))
         },
         Err(e) => {
             log::error!("Error while parsing arguments:\n\t{}", e);
