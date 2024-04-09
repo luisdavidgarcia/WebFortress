@@ -1,23 +1,29 @@
+use crate::errors::Errcode;
+
 use std::path::PathBuf;
 use structopt::StructOpt;
+
 #[derive(Debug, StructOpt)]
 #[structopt(name = "crabcan", about = "A simple container in Rust.")]
 pub struct Args {
     /// Activate debug mode
     #[structopt(short, long)]
     debug: bool,
-    /// Command to execute insde the container 
+
+    /// Command to execute insde the container
     #[structopt(short, long)]
     pub command: String,
+
     /// User ID to create inside the container
     #[structopt(short, long)]
     pub uid: u32,
+
     /// Directory to mount as root of the container
     #[structopt(parse(from_os_str), short = "m", long = "mount")]
     pub mount_dir: PathBuf,
 }
 
-pub fn parse_args() -> Args {
+pub fn parse_args() -> Result<Args, Errcode> {
     let args = Args::from_args();
 
     if args.debug {
@@ -26,7 +32,11 @@ pub fn parse_args() -> Args {
         setup_log(log::LevelFilter::Info);
     }
 
-    args
+    if !args.mount_dir.exists() || !args.mount_dir.is_dir() {
+        return Err(Errcode::ArgumentInvalid("mount"));
+    }
+
+    Ok(args)
 }
 
 pub fn setup_log(level: log::LevelFilter) {
