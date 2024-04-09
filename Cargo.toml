@@ -1,6 +1,7 @@
 [workspace]
 
-members = [
+members = [ 
+    "crabcan",
     "os_fundamentals",
     # List other directories/packages as needed
 ]
