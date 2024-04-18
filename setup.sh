@@ -6,7 +6,7 @@ set -e
 # Function to install dependencies on Linux
 install_linux_dependencies() {
     echo "Updating and installing necessary packages for Linux..."
-    sudo apt-get update && sudo apt-get install -y curl git build-essential python3-pip docker.io
+    sudo apt-get update && sudo apt-get install -y curl git build-essential python3-pip docker.io libseccomp-dev
     sudo usermod -aG docker $USER
     echo "NOTE: You may need to log out and log back in for Docker group changes to take effect."
 }
