@@ -112,4 +112,4 @@ This project is licensed under the GNU License - see the [LICENSE](./LICENSE) fi
 
 ## Acknowledgements
 
-We would like to thank Litchi Pi for his grea [tutorial on creating a container in rust](https://litchipi.github.io/), which ultimately help build the foundation for this project.
+We would like to thank Litchi Pi for his great [tutorial on creating a container in rust](https://litchipi.github.io/), which ultimately help build the foundation for this project.
