@@ -6,8 +6,8 @@ RustContainers is an educational project aimed at creating a straightforward con
 
 - Luis David Garcia ([lgarc120@calpoly.edu](lgarc120@calpoly.edu))
 - Paul Jarski ([pjarski@calpoly.edu](pjarski@calpoly.edu))
-- Nathan McCutchen ([nwmccutc@calpoly.edu](nwmccutc@calpoly.edu))
-
+- Taran Dhillon ([]())
+  
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -21,6 +21,8 @@ These instructions will get you a copy of the project up and running on your loc
 The provided setup script will guide you through installing Rust, Cargo, and Docker if they are not already installed on your system.
 
 ### Setup
+
+NOTE: You must be using a Linux environment to make full use of the container, otherwise the program will fail, as it was not developed for any other operating system yet. 
 
 To set up your local development environment, follow these steps:
 
@@ -107,3 +109,7 @@ We welcome contributions to this project! Please consider the following steps:
 ## License
 
 This project is licensed under the GNU License - see the [LICENSE](./LICENSE) file for details.
+
+## Acknowledgements
+
+We would like to thank Litchi Pi for his grea [tutorial on creating a container in rust](https://litchipi.github.io/), which ultimately help build the foundation for this project.
