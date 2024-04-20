@@ -17,3 +17,5 @@ syscallz = "0.16.1"
 libc = "0.2.102"
 cgroups-rs = "0.2.6"
 rlimit = "0.6.2"
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.5"
