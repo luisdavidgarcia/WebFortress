@@ -5,7 +5,7 @@ mod errors;
 mod cli;
 mod container;
 mod ipc;
-mod config;
+mod container_config;
 mod child;
 mod namespaces;
 mod hostname;

@@ -1,6 +1,6 @@
-use crate::cli::Args;
+use crate::config_parser::Config;
 use crate::errors::Errcode;
-use crate::config::ContainerOpts;
+use crate::container_config::ContainerOpts;
 use crate::child::generate_child_process;
 use crate::namespaces::handle_child_uid_map;
 use crate::resources::{restrict_resources, clean_cgroups};
@@ -21,10 +21,10 @@ pub struct Container{
 }
 
 impl Container {
-    pub fn new(args: Args) -> Result<Container, Errcode> {
+    pub fn new(config_file: Config) -> Result<Container, Errcode> {
         let mut addpaths = vec![];
-        for ap_pair in args.addpaths.iter(){
-            let mut pair = ap_pair.to_str().unwrap().split(":");
+        for ap_pair in config_file.additional_paths {
+            let mut pair = ap_pair.split(":");
             let frompath = PathBuf::from(pair.next().unwrap())
                 .canonicalize().expect("Cannot canonicalize path")
                 .to_path_buf();
@@ -34,10 +34,10 @@ impl Container {
             addpaths.push((frompath, mntpath));
         }
         let (config, sockets) = ContainerOpts::new(
-                args.command,
-                args.uid,
-                args.mount_dir,
-                addpaths)?;
+            config_file.command,
+            config_file.uid,
+            config_file.mount_dir,
+            addpaths)?;
 
         Ok(Container {
             sockets,
@@ -100,9 +100,9 @@ pub fn check_linux_version() -> Result<(), Errcode> {
     Ok(())
 }
 
-pub fn start(args: Args) -> Result<(), Errcode> {
+pub fn start(config_file: Config) -> Result<(), Errcode> {
     check_linux_version()?;
-    let mut container = Container::new(args)?;
+    let mut container = Container::new(config_file)?;
     log::debug!("Container sockets: ({}, {})", container.sockets.0, container.sockets.1);
     if let Err(e) = container.create(){
         container.clean_exit()?;

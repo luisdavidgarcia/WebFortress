@@ -7,8 +7,8 @@ use toml;
 #[derive(Deserialize, Debug)]
 pub struct Config {
     pub debug: bool,
-    pub uid: usize,
-    pub mount_dir: String,
+    pub uid: u32,
+    pub mount_dir: PathBuf,
     pub command: String,
     pub additional_paths: Vec<String>,
 }

@@ -1,5 +1,5 @@
 use crate::errors::Errcode;
-use crate::config::ContainerOpts;
+use crate::container_config::ContainerOpts;
 use crate::namespaces::userns;
 use crate::hostname::set_container_hostname;
 use crate::mounts::setmountpoint;
