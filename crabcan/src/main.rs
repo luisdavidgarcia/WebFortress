@@ -5,7 +5,7 @@ mod errors;
 mod cli;
 mod container;
 mod ipc;
-mod config;
+mod container_config;
 mod child;
 mod namespaces;
 mod hostname;
@@ -13,6 +13,7 @@ mod mounts;
 mod capabilities;
 mod syscalls;
 mod resources;
+mod config_parser;
 
 use errors::exit_with_retcode;
 
