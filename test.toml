@@ -2,4 +2,10 @@ debug = true
 uid = 0
 mount_dir = "./mountdir"
 command = "bash"
-additional_paths = ["/lib64:/lib64", "/lib:/lib"]
+additional_paths = [
+    "/lib64:/lib64",
+    "/lib:/lib",
+    "/usr/lib:/usr/lib",
+    "/usr/lib64:/usr/lib64",
+    "/bin:/bin"
+]
