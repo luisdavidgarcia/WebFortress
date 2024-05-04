@@ -5,6 +5,7 @@ use crate::child::generate_child_process;
 use crate::namespaces::handle_child_uid_map;
 use crate::resources::{restrict_resources, clean_cgroups};
 use crate::mounts::clean_mounts;
+use crate::networking::setup_container_networking;
 
 use nix::unistd::Pid;
 use nix::unistd::close;
@@ -18,6 +19,7 @@ pub struct Container{
     sockets: (RawFd, RawFd),
     config: ContainerOpts,
     child_pid: Option<Pid>,
+    ip_address: Option<String>,
 }
 
 impl Container {
@@ -43,11 +45,18 @@ impl Container {
             sockets,
             config,
             child_pid: None,
+            ip_address: None,
         })
     }
 
     pub fn create(&mut self) -> Result<(), Errcode> {
         let pid = generate_child_process(self.config.clone())?;
+
+        match setup_container_networking(pid) {
+            Ok(ip_address) => self.ip_address = Some(ip_address),
+            Err(e) => return Err(e)
+        }
+
         restrict_resources(&self.config.hostname, pid)?;
         handle_child_uid_map(pid, self.sockets.0)?;
         self.child_pid = Some(pid);
