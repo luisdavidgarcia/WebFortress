@@ -18,6 +18,7 @@ pub enum Errcode{
     SyscallsError(u8),
     ResourcesError(u8),
     ConfigFileError(u8),
+    NetworkError(u8),
     RngError
 }
 
