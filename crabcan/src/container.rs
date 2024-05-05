@@ -51,14 +51,15 @@ impl Container {
 
     pub fn create(&mut self) -> Result<(), Errcode> {
         let pid = generate_child_process(self.config.clone())?;
+        restrict_resources(&self.config.hostname, pid)?;
 
-        match setup_container_networking(pid) {
+        match setup_container_networking(pid, 8000, 8000) {
             Ok(ip_address) => self.ip_address = Some(ip_address),
             Err(e) => return Err(e)
         }
 
-        restrict_resources(&self.config.hostname, pid)?;
         handle_child_uid_map(pid, self.sockets.0)?;
+
         self.child_pid = Some(pid);
         log::debug!("Creation finished");
         Ok(())

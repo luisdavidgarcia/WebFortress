@@ -1,56 +1,57 @@
-use crate::errors::Errcode; 
-
+use crate::errors::Errcode;
+use nix::fcntl::OFlag;
+use nix::sched::{setns, CloneFlags};
+use nix::unistd::Pid;
+use std::fs::File;
+use std::os::unix::io::AsRawFd;
 use std::process::Command;
 
-use nix::unistd::Pid;
-
-pub fn setup_container_networking(container_pid: Pid) -> Result<String, Errcode> {
+pub fn setup_container_networking(container_pid: Pid, container_port: u16, host_port: u16) -> Result<String, Errcode> {
     _execute_command(Command::new("ip")
-        .args(["link", "add", "name", "br0", "type", "bridge"]), 2)?;
+        .args(&["link", "add", "veth0", "type", "veth", "peer", "name", "veth1"]), 2)?;
 
     _execute_command(Command::new("ip")
-        .args(["addr", "add", "172.18.0.1/24", "dev", "br0"]), 3)?;
+        .args(&["link", "set", "veth1", "netns", &container_pid.to_string()]), 3)?;
 
     _execute_command(Command::new("ip")
-        .args(["link", "set", "dev", "br0", "up"]), 4)?;
+        .args(&["addr", "add", "172.18.0.1/24", "dev", "veth0"]), 3)?;
 
     _execute_command(Command::new("ip")
-        .args(["link", "add", "vethA", "type", "veth", "peer", "name", "vethB"]), 5)?;
+        .args(&["link", "set", "veth0", "up"]), 4)?;
+
+    // Change the namespace using setns
+    let ns_path = format!("/proc/{}/ns/net", container_pid);
+    let ns_file = File::open(&ns_path).map_err(|_| Errcode::NetworkError(10))?;
+    let fd = ns_file.as_raw_fd();
+
+    setns(fd, CloneFlags::CLONE_NEWNET).map_err(|_| Errcode::NetworkError(11))?;
 
     _execute_command(Command::new("ip")
-        .args(["link", "set", "vethA", "master", "br0"]), 6)?;
+        .args(&["addr", "add", "172.18.0.2/24", "dev", "veth1"]), 5)?;
 
     _execute_command(Command::new("ip")
-        .args(["link", "set", "vethA", "up"]), 7)?;
+        .args(&["link", "set", "veth1", "up"]), 6)?;
 
     _execute_command(Command::new("ip")
-        .args(["link", "set", "vethB", "netns", &container_pid.to_string()]), 8)?;
+        .args(&["route", "add", "default", "via", "172.18.0.1"]), 7)?;
 
-    // Note: You might need to adjust this for the actual path or handling
-    _execute_command(Command::new("nsenter")
-        .args(["--net=/proc/&container_pid.to_string()/ns/net", "ip", "addr", "add", "172.17.0.2/24", "dev", "vethB"]), 9)?;
-
-    _execute_command(Command::new("nsenter")
-        .args(["--net=/proc/&container_pid.to_string()/ns/net", "ip", "link", "set", "dev", "vethB", "up"]), 10)?;
-
-    _execute_command(Command::new("sysctl")
-        .args(["-w", "net.ipv4.ip_forward=1"]), 11)?;
+    // Forward traffic from host_port to container_port
+    _execute_command(Command::new("iptables")
+        .args(&["-t", "nat", "-A", "PREROUTING", "-p", "tcp", "--dport", &host_port.to_string(), "-j", "DNAT", "--to-destination", &format!("172.18.0.2:{}", container_port)]), 8)?;
 
     _execute_command(Command::new("iptables")
-        .args(["-t", "nat", "-A", "POSTROUTING", "-s", "172.17.0.0/24", "-o", "eth0", "-j", "MASQUERADE"]), 12)?;
+        .args(&["-t", "nat", "-A", "POSTROUTING", "-p", "tcp", "-d", "172.18.0.2", "--dport", &container_port.to_string(), "-j", "MASQUERADE"]), 9)?;
 
-    let ip_address = "172.17.0.2/24".to_string();
-
-    Ok(ip_address)
+    Ok("172.18.0.2/24".to_string())
 }
 
-// Helper function to handle command execution errors
 fn _execute_command(command: &mut Command, error_value: u8) -> Result<(), Errcode> {
-    command.status()
-        .map_err(|e| Errcode::NetworkError(1)) // Convert any std::io::Error to your Errcode
-        .and_then(|status| if status.success() {
-            Ok(())
-        } else {
-            Err(Errcode::NetworkError(error_value))
-        })
+    let status = command.status().map_err(|_| Errcode::NetworkError(error_value))?;
+    if status.success() {
+        Ok(())
+    } else {
+        println!("Failed to execute command: {:?}", command);  // Log the command that failed
+        println!("Error value: {}", error_value);
+        Err(Errcode::NetworkError(error_value))
+    }
 }
