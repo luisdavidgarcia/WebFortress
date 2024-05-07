@@ -19,7 +19,7 @@ pub fn setup_container_networking(container_pid: Pid, container_port: u16, host_
     _execute_command(Command::new("ip")
         .args(&["link", "set", "veth0", "up"]), 4)?;
 
-    // Change the namespace using setns
+    // Change the namespace using setns - Works for Now
     let ns_path = format!("/proc/{}/ns/net", container_pid);
     let ns_file = File::open(&ns_path).map_err(|_| Errcode::NetworkError(10))?;
     let fd = ns_file.as_raw_fd();
@@ -35,7 +35,7 @@ pub fn setup_container_networking(container_pid: Pid, container_port: u16, host_
     _execute_command(Command::new("ip")
         .args(&["route", "add", "default", "via", "172.18.0.1"]), 7)?;
 
-    // Forward traffic from host_port to container_port
+    // Forward traffic from host_port to container_port - Works, but very specific to the IP
     _execute_command(Command::new("iptables")
         .args(&["-t", "nat", "-A", "PREROUTING", "-p", "tcp", "--dport", &host_port.to_string(), "-j", "DNAT", "--to-destination", &format!("172.18.0.2:{}", container_port)]), 8)?;
 
