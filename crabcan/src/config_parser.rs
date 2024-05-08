@@ -2,7 +2,6 @@ use crate::errors::Errcode;
 
 use serde::Deserialize;
 use std::{fs, path::PathBuf};
-use toml;
 
 #[derive(Deserialize, Debug)]
 pub struct Config {
@@ -19,4 +18,4 @@ pub fn load_config(config_file_path: PathBuf) -> Result<Config, Errcode> {
     let config: Config = toml::from_str(&contents)
         .map_err(|_| Errcode::ConfigFileError(1))?;
     Ok(config)
-} 
+}

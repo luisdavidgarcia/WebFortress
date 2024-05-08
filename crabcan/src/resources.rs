@@ -26,11 +26,11 @@ pub fn restrict_resources(hostname: &String, pid: Pid) -> Result<(), Errcode>{
         .build(Box::new(V2::new()));
 
     let pid : u64 = pid.as_raw().try_into().unwrap();
-    if let Err(_) = cgs.add_task(CgroupPid::from(pid)) {
+    if cgs.add_task(CgroupPid::from(pid)).is_err() {
         return Err(Errcode::ResourcesError(0));
     };
 
-    if let Err(_) = setrlimit(Resource::NOFILE, NOFILE_RLIMIT, NOFILE_RLIMIT){
+    if setrlimit(Resource::NOFILE, NOFILE_RLIMIT, NOFILE_RLIMIT).is_err() {
         return Err(Errcode::ResourcesError(1));
     }
 
@@ -41,7 +41,7 @@ pub fn clean_cgroups(hostname: &String) -> Result<(), Errcode>{
     log::debug!("Cleaning cgroups");
     match canonicalize(format!("/sys/fs/cgroup/{}/", hostname)){
         Ok(d) => {
-            if let Err(_) = remove_dir(d) {
+            if remove_dir(d).is_err() {
                 return Err(Errcode::ResourcesError(2));
             }
         },

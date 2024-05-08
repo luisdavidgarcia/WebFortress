@@ -3,11 +3,11 @@ use crate::errors::Errcode;
 use rand::Rng;
 use rand::seq::SliceRandom;
 
-const HOSTNAME_NAMES: [&'static str; 8] = [
+const HOSTNAME_NAMES: [&str; 8] = [
     "cat", "world", "coffee", "girl",
     "man", "book", "pinguin", "moon"];
 
-const HOSTNAME_ADJ: [&'static str; 16] = [
+const HOSTNAME_ADJ: [&str; 16] = [
     "blue", "red", "green", "yellow",
     "big", "small", "tall", "thin",
     "round", "square", "triangular", "weird",

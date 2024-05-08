@@ -44,7 +44,7 @@ pub fn setsyscalls() -> Result<(), Errcode> {
             refuse_syscall(&mut ctx, sc)?;
         }
 
-        if let Err(_) = ctx.load(){
+        if ctx.load().is_err() {
             return Err(Errcode::SyscallsError(0));
         }
 

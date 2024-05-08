@@ -1,5 +1,6 @@
 use crate::errors::Errcode;
 
+use std::path::Path;
 use std::path::PathBuf;
 
 //https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html
@@ -30,8 +31,8 @@ pub fn unmount_path(path: &PathBuf) -> Result<(), Errcode>{
     }
 }
 
-pub fn delete_dir(path: &PathBuf) -> Result<(), Errcode>{
-    match remove_dir(path.as_path()){
+pub fn delete_dir(path: &Path) -> Result<(), Errcode>{
+    match remove_dir(path){
         Ok(_) => Ok(()),
         Err(e) => {
             log::error!("Unable to delete directory {}: {}", path.to_str().unwrap(), e);
@@ -74,14 +75,15 @@ pub fn mount_directory(path: Option<&PathBuf>, mount_point: &PathBuf, flags: Vec
 use std::fs::remove_dir;
 use nix::unistd::{pivot_root, chdir};
 use nix::mount::{mount, MsFlags, umount2, MntFlags};
-pub fn setmountpoint(mount_dir: &PathBuf, addpaths: &Vec<(PathBuf, PathBuf)>) -> Result<(), Errcode> {
+
+pub fn setmountpoint(mount_dir: &PathBuf, addpaths: &[(PathBuf, PathBuf)]) -> Result<(), Errcode> {
     log::debug!("Setting mount points ...");
     mount_directory(None, &PathBuf::from("/"), vec![MsFlags::MS_REC, MsFlags::MS_PRIVATE])?;
 
     let new_root = PathBuf::from(format!("/tmp/crabcan.{}", random_string(12)));
     log::debug!("Mounting temp directory {}", new_root.as_path().to_str().unwrap());
     create_directory(&new_root)?;
-    mount_directory(Some(&mount_dir), &new_root, vec![MsFlags::MS_BIND, MsFlags::MS_PRIVATE])?;
+    mount_directory(Some(mount_dir), &new_root, vec![MsFlags::MS_BIND, MsFlags::MS_PRIVATE])?;
 
     log::debug!("Mounting additionnal paths");
     for (inpath, mntpath) in addpaths.iter(){
@@ -94,13 +96,13 @@ pub fn setmountpoint(mount_dir: &PathBuf, addpaths: &Vec<(PathBuf, PathBuf)>) ->
     let old_root_tail = format!("oldroot.{}", random_string(6));
     let put_old = new_root.join(PathBuf::from(old_root_tail.clone()));
     create_directory(&put_old)?;
-    if let Err(_) = pivot_root(&new_root, &put_old) {
+    if pivot_root(&new_root, &put_old).is_err() {
         return Err(Errcode::MountsError(4));
     }
 
     log::debug!("Unmounting old root");
     let old_root = PathBuf::from(format!("/{}", old_root_tail));
-    if let Err(_) = chdir(&PathBuf::from("/")) {
+    if chdir(&PathBuf::from("/")).is_err() {
         return Err(Errcode::MountsError(5));
     }
     unmount_path(&old_root)?;
@@ -108,7 +110,7 @@ pub fn setmountpoint(mount_dir: &PathBuf, addpaths: &Vec<(PathBuf, PathBuf)>) ->
     Ok(())
 }
 
-pub fn clean_mounts(_rootpath: &PathBuf) -> Result<(), Errcode>{
-    //unmount_path(&rootpath)?;
+pub fn clean_mounts(rootpath: &PathBuf) -> Result<(), Errcode>{
+    unmount_path(rootpath)?;
     Ok(())
 }

@@ -52,7 +52,7 @@ detect_and_install_dependencies() {
         ;;
     esac
 
-    install_rust
+    #install_rust
     install_and_setup_pre_commit
 }
 
@@ -87,7 +87,6 @@ manage_docker() {
 # Main function to orchestrate setup and docker management
 main() {
     detect_and_install_dependencies
-    manage_docker
 }
 
 # Invoke the main function

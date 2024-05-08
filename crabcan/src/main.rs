@@ -14,6 +14,7 @@ mod capabilities;
 mod syscalls;
 mod resources;
 mod config_parser;
+mod networking;
 
 use errors::exit_with_retcode;
 

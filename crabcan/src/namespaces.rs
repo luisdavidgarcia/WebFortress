@@ -7,10 +7,7 @@ use nix::unistd::{setgroups, setresuid, setresgid};
 use std::os::unix::io::RawFd;
 pub fn userns(fd: RawFd, uid: u32) -> Result<(), Errcode> {
     log::debug!("Setting up user namespace with UID {}", uid);
-    let has_userns = match unshare(CloneFlags::CLONE_NEWUSER) {
-        Ok(_) => true,
-        Err(_) => false,
-    };
+    let has_userns = unshare(CloneFlags::CLONE_NEWUSER).is_ok();
     send_boolean(fd, has_userns)?;
 
     if recv_boolean(fd)? {
@@ -26,15 +23,15 @@ pub fn userns(fd: RawFd, uid: u32) -> Result<(), Errcode> {
     log::debug!("Switching to uid {} / gid {}...", uid, uid);
     let gid = Gid::from_raw(uid);
     let uid = Uid::from_raw(uid);
-    if let Err(_) = setgroups(&[gid]){
+    if setgroups(&[gid]).is_err() {
         return Err(Errcode::NamespacesError(1));
     }
 
-    if let Err(_) = setresgid(gid, gid, gid){
+    if setresgid(gid, gid, gid).is_err() {
         return Err(Errcode::NamespacesError(2));
     }
 
-    if let Err(_) = setresuid(uid, uid, uid){
+    if setresuid(uid, uid, uid).is_err() {
         return Err(Errcode::NamespacesError(3));
     }
 
@@ -50,7 +47,7 @@ use nix::unistd::Pid;
 pub fn handle_child_uid_map(pid: Pid, fd: RawFd) -> Result<(), Errcode> {
     if recv_boolean(fd)? {
         if let Ok(mut uid_map) = File::create(format!("/proc/{}/{}", pid.as_raw(), "uid_map")) {
-            if let Err(_) = uid_map.write_all(format!("0 {} {}", USERNS_OFFSET, USERNS_COUNT).as_bytes()) {
+            if uid_map.write_all(format!("0 {} {}", USERNS_OFFSET, USERNS_COUNT).as_bytes()).is_err() {
                 return Err(Errcode::NamespacesError(4));
             }
         } else {
@@ -58,7 +55,7 @@ pub fn handle_child_uid_map(pid: Pid, fd: RawFd) -> Result<(), Errcode> {
         }
 
         if let Ok(mut gid_map) = File::create(format!("/proc/{}/{}", pid.as_raw(), "gid_map")) {
-            if let Err(_) = gid_map.write_all(format!("0 {} {}", USERNS_OFFSET, USERNS_COUNT).as_bytes()) {
+            if gid_map.write_all(format!("0 {} {}", USERNS_OFFSET, USERNS_COUNT).as_bytes()).is_err() {
                 return Err(Errcode::NamespacesError(6));
             }
         } else {

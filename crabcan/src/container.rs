@@ -5,6 +5,7 @@ use crate::child::generate_child_process;
 use crate::namespaces::handle_child_uid_map;
 use crate::resources::{restrict_resources, clean_cgroups};
 use crate::mounts::clean_mounts;
+use crate::networking::setup_container_networking;
 
 use nix::unistd::Pid;
 use nix::unistd::close;
@@ -18,13 +19,14 @@ pub struct Container{
     sockets: (RawFd, RawFd),
     config: ContainerOpts,
     child_pid: Option<Pid>,
+    ip_address: Option<String>,
 }
 
 impl Container {
     pub fn new(config_file: Config) -> Result<Container, Errcode> {
         let mut addpaths = vec![];
         for ap_pair in config_file.additional_paths {
-            let mut pair = ap_pair.split(":");
+            let mut pair = ap_pair.split(':');
             let frompath = PathBuf::from(pair.next().unwrap())
                 .canonicalize().expect("Cannot canonicalize path")
                 .to_path_buf();
@@ -43,13 +45,21 @@ impl Container {
             sockets,
             config,
             child_pid: None,
+            ip_address: None,
         })
     }
 
     pub fn create(&mut self) -> Result<(), Errcode> {
         let pid = generate_child_process(self.config.clone())?;
         restrict_resources(&self.config.hostname, pid)?;
+
+        match setup_container_networking(pid) {
+            Ok(ip_address) => self.ip_address = Some(ip_address),
+            Err(e) => return Err(e)
+        }
+
         handle_child_uid_map(pid, self.sockets.0)?;
+
         self.child_pid = Some(pid);
         log::debug!("Creation finished");
         Ok(())
