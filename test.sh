@@ -3,5 +3,5 @@
 set -e
 
 mkdir -p mountdir
-cargo build
 cp /bin/bash ./mountdir/
+cargo build
