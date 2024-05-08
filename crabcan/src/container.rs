@@ -26,7 +26,7 @@ impl Container {
     pub fn new(config_file: Config) -> Result<Container, Errcode> {
         let mut addpaths = vec![];
         for ap_pair in config_file.additional_paths {
-            let mut pair = ap_pair.split(":");
+            let mut pair = ap_pair.split(':');
             let frompath = PathBuf::from(pair.next().unwrap())
                 .canonicalize().expect("Cannot canonicalize path")
                 .to_path_buf();
@@ -53,7 +53,7 @@ impl Container {
         let pid = generate_child_process(self.config.clone())?;
         restrict_resources(&self.config.hostname, pid)?;
 
-        match setup_container_networking(pid, 8000, 8000) {
+        match setup_container_networking(pid) {
             Ok(ip_address) => self.ip_address = Some(ip_address),
             Err(e) => return Err(e)
         }

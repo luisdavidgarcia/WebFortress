@@ -6,7 +6,7 @@ use crate::container::MINIMAL_KERNEL_VERSION;
 #[derive(Debug)]
 // Contains all possible errors in our tool
 pub enum Errcode{
-    ArgumentInvalid(&'static str),
+    // ArgumentInvalid(&'static str),
     NotSupported(u8),
     SocketError(u8),
     ContainerError(u8),
@@ -49,7 +49,7 @@ impl fmt::Display for Errcode {
             },
 
             // Message to display when an argument is invalid
-            Errcode::ArgumentInvalid(element) => write!(f, "ArgumentInvalid: {}", element),
+            // Errcode::ArgumentInvalid(element) => write!(f, "ArgumentInvalid: {}", element),
 
             _ => write!(f, "{:?}", self) // For any variant not previously covered
         }

@@ -34,7 +34,7 @@ impl ContainerOpts{
                 addpaths,
                 mount_dir,
                 hostname: generate_hostname()?,
-                fd: sockets.1.clone(),
+                fd: sockets.1,
             },
             sockets
         ))

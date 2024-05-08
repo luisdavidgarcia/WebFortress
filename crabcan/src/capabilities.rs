@@ -30,8 +30,8 @@ use capctl::caps::FullCapState;
 pub fn setcapabilities() -> Result<(), Errcode> {
     log::debug!("Clearing unwanted capabilities ...");
     if let Ok(mut caps) = FullCapState::get_current() {
-        caps.bounding.drop_all(CAPABILITIES_DROP.iter().map(|&cap| cap));
-        caps.inheritable.drop_all(CAPABILITIES_DROP.iter().map(|&cap| cap));
+        caps.bounding.drop_all(CAPABILITIES_DROP.iter().copied());
+        caps.inheritable.drop_all(CAPABILITIES_DROP.iter().copied());
         Ok(())
     } else {
         Err(Errcode::CapabilitiesError(0))

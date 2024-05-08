@@ -31,20 +31,19 @@ fn child(config: ContainerOpts) -> isize {
         }
     }
 
-    if let Err(_) = close(config.fd){
+    if close(config.fd).is_err() {
         log::error!("Error while closing socket ...");
         return -1;
     }
 
     log::info!("Starting container with command {} and args {:?}", config.path.to_str().unwrap(), config.argv);
-    let retcode = match execve::<CString, CString>(&config.path, &config.argv, &[]){
+    match execve::<CString, CString>(&config.path, &config.argv, &[]){
         Ok(_) => 0,
         Err(e) => {
             log::error!("Error while trying to perform execve: {:?}", e);
             -1
         }
-    };
-    retcode
+    }
 }
 
 pub fn generate_child_process(config: ContainerOpts) -> Result<Pid, Errcode> {
