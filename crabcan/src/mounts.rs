@@ -110,7 +110,7 @@ pub fn setmountpoint(mount_dir: &PathBuf, addpaths: &[(PathBuf, PathBuf)]) -> Re
     Ok(())
 }
 
-pub fn clean_mounts(rootpath: &PathBuf) -> Result<(), Errcode>{
-    unmount_path(rootpath)?;
+pub fn clean_mounts(_rootpath: &Path) -> Result<(), Errcode>{
+    //unmount_path(rootpath)?;
     Ok(())
 }
