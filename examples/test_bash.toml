@@ -7,5 +7,5 @@ additional_paths = [
     "/lib:/lib",
     "/usr/lib:/usr/lib",
     "/usr/lib64:/usr/lib64",
-    "/bin:/bin"
+    "/bin:/bin",
 ]
