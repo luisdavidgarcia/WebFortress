@@ -1,7 +1,7 @@
 debug = true
 uid = 0
 mount_dir = "./mountdir"
-command = "python3"
+command = "/usr/bin/python3 -m http.server 8000"
 additional_paths = [
     "/lib64:/lib64",
     "/lib:/lib",

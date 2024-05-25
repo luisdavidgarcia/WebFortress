@@ -37,7 +37,21 @@ fn child(config: ContainerOpts) -> isize {
     }
 
     log::info!("Starting container with command {} and args {:?}", config.path.to_str().unwrap(), config.argv);
-    match execve::<CString, CString>(&config.path, &config.argv, &[]){
+
+    // Check if the command exists within the new root
+    let command_path = std::path::Path::new(config.path.to_str().unwrap());
+    if !command_path.exists() {
+        log::error!("Command not found: {:?}", command_path);
+        return -1;
+    } else {
+        log::debug!("Command found: {:?}", command_path);
+    }
+
+    // Log the environment variables if any
+    let env_vars: Vec<CString> = vec![];
+    log::debug!("Environment variables: {:?}", env_vars);
+
+    match execve::<CString, CString>(&config.path, &config.argv, &env_vars) {
         Ok(_) => 0,
         Err(e) => {
             log::error!("Error while trying to perform execve: {:?}", e);
@@ -45,6 +59,7 @@ fn child(config: ContainerOpts) -> isize {
         }
     }
 }
+
 
 pub fn generate_child_process(config: ContainerOpts) -> Result<Pid, Errcode> {
     let mut tmp_stack: [u8; STACK_SIZE] = [0; STACK_SIZE];
