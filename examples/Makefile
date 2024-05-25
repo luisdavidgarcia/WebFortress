@@ -2,11 +2,9 @@
 BIN := "../target/debug/web_fortress"
 
 # Check if CONFIG_FILE is set, otherwise print an error and exit
-ifndef CONFIG_FILE
-$(error CONFIG_FILE is not set. Please provide a configuration file, e.g., 'make CONFIG_FILE=your_config.toml')
-endif
+CONFIG_FILE := "test_python.toml"
 
-all: test
+all: 
 
 test:
 	cargo build

@@ -2,9 +2,13 @@ use crate::errors::Errcode;
 
 use std::path::Path;
 use std::path::PathBuf;
+use std::fs::remove_dir;
 
-//https://rust-lang-nursery.github.io/rust-cookbook/algorithms/randomness.html
+use nix::unistd::{pivot_root, chdir};
+use nix::mount::{mount, MsFlags, umount2, MntFlags};
+
 use rand::Rng;
+
 pub fn random_string(n: usize) -> String {
     const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                             abcdefghijklmnopqrstuvwxyz\
@@ -72,22 +76,19 @@ pub fn mount_directory(path: Option<&PathBuf>, mount_point: &PathBuf, flags: Vec
     }
 }
 
-use std::fs::remove_dir;
-use nix::unistd::{pivot_root, chdir};
-use nix::mount::{mount, MsFlags, umount2, MntFlags};
-
 pub fn setmountpoint(mount_dir: &PathBuf, addpaths: &[(PathBuf, PathBuf)]) -> Result<(), Errcode> {
     log::debug!("Setting mount points ...");
     mount_directory(None, &PathBuf::from("/"), vec![MsFlags::MS_REC, MsFlags::MS_PRIVATE])?;
 
-    let new_root = PathBuf::from(format!("/tmp/web_fortress.{}", random_string(12)));
+    let new_root = PathBuf::from(format!("/tmp/crabcan.{}", random_string(12)));
     log::debug!("Mounting temp directory {}", new_root.as_path().to_str().unwrap());
     create_directory(&new_root)?;
     mount_directory(Some(mount_dir), &new_root, vec![MsFlags::MS_BIND, MsFlags::MS_PRIVATE])?;
 
-    log::debug!("Mounting additionnal paths as read-only");
-    for (inpath, mntpath) in addpaths.iter(){
+    log::debug!("Mounting additional paths as read-only");
+    for (inpath, mntpath) in addpaths.iter() {
         let outpath = new_root.join(mntpath);
+        log::debug!("Mounting {} to {}", inpath.display(), outpath.display());
         create_directory(&outpath)?;
         mount_directory(Some(inpath), &outpath, vec![MsFlags::MS_PRIVATE, MsFlags::MS_BIND, MsFlags::MS_RDONLY])?;
     }
@@ -109,6 +110,7 @@ pub fn setmountpoint(mount_dir: &PathBuf, addpaths: &[(PathBuf, PathBuf)]) -> Re
     delete_dir(&old_root)?;
     Ok(())
 }
+
 
 pub fn clean_mounts(_rootpath: &Path) -> Result<(), Errcode>{
     //unmount_path(rootpath)?;
