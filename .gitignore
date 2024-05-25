@@ -16,3 +16,7 @@ Cargo.lock
 .vscode/
 
 mountdir/
+
+# Don't include Docker Materials
+docker_materials/
+.dev_container/

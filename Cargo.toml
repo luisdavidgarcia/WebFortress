@@ -1,7 +1,6 @@
 [workspace]
 
-members = [ 
-    "crabcan",
-    # List other directories/packages as needed
+members = [
+    "web_fortress",
 ]
 resolver = "2"
