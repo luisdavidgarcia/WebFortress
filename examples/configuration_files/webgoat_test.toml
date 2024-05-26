@@ -1,7 +1,7 @@
 debug = true
 uid = 0
 mount_dir = "./webgoat_dir"
-command = "/usr/lib/jvm/java-17-openjdk-amd64/bin/java -Dfile.encoding=UTF-8 -jar webgoat.jar --server.address=172.18.0.2 --server.port=8080"
+command = "/usr/lib/jvm/java-17-openjdk-amd64/bin/java -jar webgoat.jar --server.address=172.18.0.2 --server.port=8080"
 
 additional_paths = [
     "/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu",
@@ -13,4 +13,5 @@ additional_paths = [
     "/usr/bin:/usr/bin",
     "/usr/lib/jvm/java-17-openjdk-amd64/lib:/usr/lib/jvm/java-17-openjdk-amd64/lib",
     "/usr/lib/jvm/java-17-openjdk-amd64/bin:/usr/lib/jvm/java-17-openjdk-amd64/bin",
+    "/usr/lib/jvm/java-17-openjdk-amd64/conf/security:/usr/lib/jvm/java-17-openjdk-amd64/conf/security",
 ]
