@@ -1,32 +1,23 @@
 use crate::errors::Errcode;
-
-use std::path::Path;
-use std::path::PathBuf;
-use std::fs::remove_dir;
-
+use std::path::{Path, PathBuf};
+use std::fs::{remove_dir, create_dir_all, copy};
 use nix::unistd::{pivot_root, chdir};
 use nix::mount::{mount, MsFlags, umount2, MntFlags};
-
 use rand::Rng;
 
 pub fn random_string(n: usize) -> String {
-    const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
-                            abcdefghijklmnopqrstuvwxyz\
-                            0123456789";
+    const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let mut rng = rand::thread_rng();
-
-    let name: String = (0..n)
+    (0..n)
         .map(|_| {
             let idx = rng.gen_range(0..CHARSET.len());
             CHARSET[idx] as char
         })
-        .collect();
-
-    name
+        .collect()
 }
 
-pub fn unmount_path(path: &PathBuf) -> Result<(), Errcode>{
-    match umount2(path, MntFlags::MNT_DETACH){
+pub fn unmount_path(path: &PathBuf) -> Result<(), Errcode> {
+    match umount2(path, MntFlags::MNT_DETACH) {
         Ok(_) => Ok(()),
         Err(e) => {
             log::error!("Unable to umount {}: {}", path.to_str().unwrap(), e);
@@ -35,8 +26,8 @@ pub fn unmount_path(path: &PathBuf) -> Result<(), Errcode>{
     }
 }
 
-pub fn delete_dir(path: &Path) -> Result<(), Errcode>{
-    match remove_dir(path){
+pub fn delete_dir(path: &Path) -> Result<(), Errcode> {
+    match remove_dir(path) {
         Ok(_) => Ok(()),
         Err(e) => {
             log::error!("Unable to delete directory {}: {}", path.to_str().unwrap(), e);
@@ -45,31 +36,28 @@ pub fn delete_dir(path: &Path) -> Result<(), Errcode>{
     }
 }
 
-use std::fs::create_dir_all;
-pub fn create_directory(path: &PathBuf) -> Result<(), Errcode>{
+pub fn create_directory(path: &PathBuf) -> Result<(), Errcode> {
     match create_dir_all(path) {
         Err(e) => {
             log::error!("Cannot create directory {}: {}", path.to_str().unwrap(), e);
             Err(Errcode::MountsError(2))
-        },
-        Ok(_) => Ok(())
+        }
+        Ok(_) => Ok(()),
     }
 }
 
-pub fn mount_directory(path: Option<&PathBuf>, mount_point: &PathBuf, flags: Vec<MsFlags>) -> Result<(), Errcode>{
+pub fn mount_directory(path: Option<&PathBuf>, mount_point: &PathBuf, flags: Vec<MsFlags>) -> Result<(), Errcode> {
     let mut ms_flags = MsFlags::empty();
-    for f in flags.iter(){
+    for f in flags.iter() {
         ms_flags.insert(*f);
     }
     match mount::<PathBuf, PathBuf, PathBuf, PathBuf>(path, mount_point, None, ms_flags, None) {
         Ok(_) => Ok(()),
         Err(e) => {
-            if let Some(p) = path{
-                log::error!("Cannot mount {} to {}: {}",
-                    p.to_str().unwrap(), mount_point.to_str().unwrap(), e);
-            }else{
-                log::error!("Cannot remount {}: {}",
-                    mount_point.to_str().unwrap(), e);
+            if let Some(p) = path {
+                log::error!("Cannot mount {} to {}: {}", p.to_str().unwrap(), mount_point.to_str().unwrap(), e);
+            } else {
+                log::error!("Cannot remount {}: {}", mount_point.to_str().unwrap(), e);
             }
             Err(Errcode::MountsError(3))
         }
@@ -89,8 +77,26 @@ pub fn setmountpoint(mount_dir: &PathBuf, addpaths: &[(PathBuf, PathBuf)]) -> Re
     for (inpath, mntpath) in addpaths.iter() {
         let outpath = new_root.join(mntpath);
         log::debug!("Mounting {} to {}", inpath.display(), outpath.display());
-        create_directory(&outpath)?;
-        mount_directory(Some(inpath), &outpath, vec![MsFlags::MS_PRIVATE, MsFlags::MS_BIND, MsFlags::MS_RDONLY])?;
+
+        if inpath.is_dir() {
+            create_directory(&outpath)?;
+            mount_directory(Some(inpath), &outpath, vec![MsFlags::MS_PRIVATE, MsFlags::MS_BIND, MsFlags::MS_RDONLY])?;
+        } else if inpath.is_file() {
+            // Ensure the parent directory exists
+            if let Some(parent_dir) = outpath.parent() {
+                log::debug!("Creating parent directory for file copy: {}", parent_dir.display());
+                create_directory(&parent_dir.to_path_buf())?;
+            }
+            // Copy the file to the new location
+            log::debug!("Copying file {} to {}", inpath.display(), outpath.display());
+            if let Err(e) = copy(inpath, &outpath) {
+                log::error!("Failed to copy file {} to {}: {}", inpath.display(), outpath.display(), e);
+                return Err(Errcode::MountsError(3));
+            }
+        } else {
+            log::error!("Path {} is neither a file nor a directory", inpath.display());
+            return Err(Errcode::MountsError(6));
+        }
     }
 
     log::debug!("Pivoting root");
@@ -111,8 +117,7 @@ pub fn setmountpoint(mount_dir: &PathBuf, addpaths: &[(PathBuf, PathBuf)]) -> Re
     Ok(())
 }
 
-
-pub fn clean_mounts(_rootpath: &Path) -> Result<(), Errcode>{
+pub fn clean_mounts(_rootpath: &Path) -> Result<(), Errcode> {
     //unmount_path(rootpath)?;
     Ok(())
 }
