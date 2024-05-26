@@ -17,8 +17,11 @@ Cargo.lock
 
 mountdir/
 dvwa_dir/
+wegboat_dir/
 
 # Don't include Docker Materials
 docker_materials/
 .dev_container/
+
+*.jar
 

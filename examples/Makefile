@@ -25,6 +25,10 @@ dvwa_test: prepare_dirs clean_veth
 	cargo build
 	sudo $(BIN) --config configuration_files/dvwa_test.toml
 
+webgoat_test: clean_veth
+	cargo build
+	sudo $(BIN) --config configuration_files/webgoat_test.toml
+
 get_syscalls:
 	cargo build
 	sudo strace -f -o syscall_web_fortress_output.txt $(BIN) --config $(CONFIG_FILE)
