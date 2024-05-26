@@ -48,7 +48,11 @@ fn child(config: ContainerOpts) -> isize {
     }
 
     // Log the environment variables if any
-    let env_vars: Vec<CString> = vec![];
+    // let env_vars: Vec<CString> = vec![];
+    let env_vars: Vec<CString> = vec![
+        CString::new("LD_LIBRARY_PATH=/usr/lib/jvm/java-17-openjdk-amd64/lib").unwrap(),
+    ];
+
     log::debug!("Environment variables: {:?}", env_vars);
 
     match execve::<CString, CString>(&config.path, &config.argv, &env_vars) {
@@ -58,6 +62,7 @@ fn child(config: ContainerOpts) -> isize {
             -1
         }
     }
+
 }
 
 

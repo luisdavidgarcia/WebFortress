@@ -20,7 +20,6 @@ prepare_dirs:
 	sudo chmod 644 dvwa_dir/var/log/apache2/error.log
 	sudo chmod 644 dvwa_dir/var/log/apache2/access.log
 
-
 dvwa_test: prepare_dirs clean_veth
 	cargo build
 	sudo $(BIN) --config configuration_files/dvwa_test.toml
