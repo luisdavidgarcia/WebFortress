@@ -11,6 +11,7 @@ test:
 	sudo $(BIN) --config $(CONFIG_FILE)
 
 get_syscalls:
+	cargo build
 	sudo strace -f -o syscall_web_fortress_output.txt $(BIN) --config $(CONFIG_FILE)
 
 clean_network:
