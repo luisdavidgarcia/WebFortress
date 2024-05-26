@@ -1,3 +1,4 @@
+// This is module that has allow by defaultm, we want it loss for now to test DVWA
 use crate::errors::Errcode;
 
 const EPERM: u16 = 1;
@@ -44,7 +45,7 @@ pub fn setsyscalls() -> Result<(), Errcode> {
             refuse_syscall(&mut ctx, sc)?;
         }
 
-        if ctx.load().is_err() {
+        if let Err(_) = ctx.load(){
             return Err(Errcode::SyscallsError(0));
         }
 
