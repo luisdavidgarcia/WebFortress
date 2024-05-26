@@ -1,9 +1,8 @@
 # Define the variable for the binary path
 BIN := "../target/debug/web_fortress"
-
 CONFIG_FILE := "test_python.toml"
 
-all: 
+all:
 
 bash_test:
 	cargo build
@@ -14,8 +13,13 @@ python_test:
 	sudo $(BIN) --config configuration_files/python_test.toml
 
 prepare_dirs:
-	sudo mkdir -p /var/run /var/lock
-	sudo chown -R www-data:www-data /var/run /var/lock
+	sudo mkdir -p dvwa_dir/var/run/apache2 dvwa_dir/var/lock dvwa_dir/var/log/apache2
+	sudo touch dvwa_dir/var/log/apache2/error.log dvwa_dir/var/log/apache2/access.log
+	sudo chown -R www-data:www-data dvwa_dir/var
+	sudo chmod -R 755 dvwa_dir/var/log/apache2
+	sudo chmod 644 dvwa_dir/var/log/apache2/error.log
+	sudo chmod 644 dvwa_dir/var/log/apache2/access.log
+
 
 dvwa_test: prepare_dirs clean_veth
 	cargo build

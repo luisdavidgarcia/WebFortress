@@ -16,7 +16,9 @@ Cargo.lock
 .vscode/
 
 mountdir/
+dvwa_dir/
 
 # Don't include Docker Materials
 docker_materials/
 .dev_container/
+
