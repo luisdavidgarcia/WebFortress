@@ -1,0 +1,11 @@
+debug = true
+uid = 0
+mount_dir = "./dvwa_dir"
+command = "./Install-DVWA.sh"
+additional_paths = [
+    "/lib64:/lib64",
+    "/lib:/lib",
+    "/usr/lib:/usr/lib",
+    "/usr/lib64:/usr/lib64",
+    "/bin:/bin",
+]

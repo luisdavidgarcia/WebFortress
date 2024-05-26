@@ -14,6 +14,11 @@ get_syscalls:
 	cargo build
 	sudo strace -f -o syscall_web_fortress_output.txt $(BIN) --config $(CONFIG_FILE)
 
+create_mountdir:
+	set -e
+	mkdir -p mountdir
+	cp /bin/bash ./mountdir/
+
 clean_network:
 	sudo ip addr del 172.18.0.1/24 dev br0
 	sudo ip link delete br0
