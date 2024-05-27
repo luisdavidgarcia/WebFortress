@@ -17,3 +17,9 @@ Also for `env_args` in `child.rs` you have to set them to this:
         CString::new("HOME=/").unwrap(),
     ];
 ```
+
+Also had to give juice-shop permissions of the direcotry with:
+
+```sh
+sudo chown -R 10000:10000 juice-shop/
+```
