@@ -1,7 +1,7 @@
 debug = true
 uid = 0
 mount_dir = "./dvwa_dir"
-command = "/usr/sbin/apache2ctl -D FOREGROUND"
+command = "./Install-DVWA.sh"
 
 additional_paths = [
     "/lib64:/lib64:ro",
@@ -11,15 +11,4 @@ additional_paths = [
     "/bin:/bin:ro",
     "/usr/bin:/usr/bin:ro",
     "/usr/local/bin:/usr/local/bin:ro",
-    "/usr/lib/php:/usr/lib/php:ro",
-    "/etc/apache2:/etc/apache2",
-    "/var/www/html:/var/www/html",
-    "/var/lib/mysql:/var/lib/mysql",
-    "/usr/sbin:/usr/sbin:ro",
-    "/var/run/apache2:/var/run/apache2",
-    "/var/lock:/var/lock",
-    "/var/log/apache2:/var/log/apache2",
-    "/dev:/dev",
-    "/tmp:/tmp",
-    "/etc:/etc"
 ]

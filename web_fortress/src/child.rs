@@ -51,16 +51,17 @@ fn child(config: ContainerOpts) -> isize {
     // let env_vars: Vec<CString> = vec![];
 
     // There are for juiceshop attempt
-    let env_vars: Vec<CString> = vec![
-        CString::new("LD_LIBRARY_PATH=/usr/lib:/usr/lib64:/usr/local/lib").unwrap(),
-        CString::new("HOME=/").unwrap(),
-    ];
+    // let env_vars: Vec<CString> = vec![
+    //     CString::new("LD_LIBRARY_PATH=/usr/lib:/usr/lib64:/usr/local/lib").unwrap(),
+    //     CString::new("HOME=/").unwrap(),
+    // ];
 
     // These  were in attempt for webgoat
-    // let env_vars: Vec<CString> = vec![
-    //     CString::new("LD_LIBRARY_PATH=/usr/lib/jvm/java-17-openjdk-amd64/lib").unwrap(),
-    //     CString::new("JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64").unwrap(),
-    // ];
+    let env_vars: Vec<CString> = vec![
+        CString::new("LD_LIBRARY_PATH=/usr/lib/jvm/java-17-openjdk-amd64/lib").unwrap(),
+        CString::new("JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64").unwrap(),
+        CString::new("HOME=/").unwrap(),
+    ];
 
     log::debug!("Environment variables: {:?}", env_vars);
 
