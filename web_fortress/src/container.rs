@@ -12,6 +12,7 @@ use nix::unistd::close;
 use nix::sys::wait::waitpid;
 use nix::sys::utsname::uname;
 
+use std::ffi::CString;
 use std::os::unix::io::RawFd;
 use std::path::PathBuf;
 
@@ -24,6 +25,17 @@ pub struct Container{
 
 impl Container {
     pub fn new(config_file: Config) -> Result<Container, Errcode> {
+        // Handle env arguments
+        let mut env_vars: Vec<CString> = vec![];
+        for env_var in config_file.env {
+            let cstring_env_var = match CString::new(env_var) {
+                Ok(cstr) => cstr,
+                Err(_) =>  return Err(Errcode::ConfigFileError(4)),
+            };
+            env_vars.push(cstring_env_var)
+        }
+
+        // Handle Additional Paths Type
         let mut addpaths = vec![];
         for ap_pair in config_file.additional_paths {
             let mut pair = ap_pair.split(':');
@@ -35,10 +47,12 @@ impl Container {
                 .to_path_buf();
             addpaths.push((frompath, mntpath));
         }
+        // Establish Container Config
         let (config, sockets) = ContainerOpts::new(
             config_file.command,
             config_file.uid,
             config_file.mount_dir,
+            env_vars,
             addpaths)?;
 
         Ok(Container {

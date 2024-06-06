@@ -1,11 +1,11 @@
 debug = true
 uid = 0
 mount_dir = "./mountdir"
-command = "bash"
+command = "/bin/python3"
 additional_paths = [
     "/lib64:/lib64",
     "/lib:/lib",
     "/usr/lib:/usr/lib",
     "/usr/lib64:/usr/lib64",
-    "/bin:/bin"
+    "/bin:/bin",
 ]

@@ -10,7 +10,7 @@ use std::fs::{canonicalize, remove_dir};
 use std::convert::TryInto;
 
 //                      K       M       G
-const KMEM_LIMIT: i64 = 1024 * 1024 * 1024;
+const KMEM_LIMIT: i64 = 2048 * 1024 * 1024;
 const MEM_LIMIT: i64 = KMEM_LIMIT;
 const MAX_PID: MaxValue = MaxValue::Value(64);
 const NOFILE_RLIMIT: u64 = 64;

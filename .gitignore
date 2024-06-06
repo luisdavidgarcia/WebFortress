@@ -16,7 +16,15 @@ Cargo.lock
 .vscode/
 
 mountdir/
+dvwa_dir/
+webgoat_dir/
+
+bash
 
 # Don't include Docker Materials
 docker_materials/
 .dev_container/
+
+*.jar
+
+juice-shop

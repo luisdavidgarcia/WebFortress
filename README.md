@@ -6,7 +6,8 @@ WebFortress is an educational project aimed at creating a straightforward contai
 
 - Luis David Garcia ([lgarc120@calpoly.edu](mailto:lgarc120@calpoly.edu))
 - Paul Jarski ([pjarski@calpoly.edu](mailto:pjarski@calpoly.edu))
-- Taran Dhillon
+- Taran Dhillon ([tsingh30@calpoly.edu](mailto:tsingh30@calpoly.edu))
+
 
 ## Getting Started
 
