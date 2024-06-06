@@ -2,7 +2,10 @@ debug = true
 uid = 0
 mount_dir = "./webgoat_dir"
 command = "/usr/lib/jvm/java-17-openjdk-amd64/bin/java -jar webgoat.jar --server.address=172.18.0.2 --server.port=8080"
-
+env = [
+    "LD_LIBRARY_PATH=/usr/lib/jvm/java-17-openjdk-amd64/lib",
+    "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64",
+]
 additional_paths = [
     "/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu",
     "/lib:/lib",

@@ -13,6 +13,7 @@ use nix::sched::CloneFlags;
 use std::ffi::CString;
 
 const STACK_SIZE: usize = 1024 * 1024;
+
 fn setup_container_configurations(config: &ContainerOpts) -> Result<(), Errcode> {
     set_container_hostname(&config.hostname)?;
     setmountpoint(&config.mount_dir, &config.addpaths)?;
@@ -36,7 +37,8 @@ fn child(config: ContainerOpts) -> isize {
         return -1;
     }
 
-    log::info!("Starting container with command {} and args {:?}", config.path.to_str().unwrap(), config.argv);
+    log::info!("Starting container with command {} and args {:?}", 
+        config.path.to_str().unwrap(), config.argv);
 
     // Check if the command exists within the new root
     let command_path = std::path::Path::new(config.path.to_str().unwrap());
@@ -48,24 +50,7 @@ fn child(config: ContainerOpts) -> isize {
     }
 
     // Log the environment variables if any
-    // let env_vars: Vec<CString> = vec![];
-
-    // There are for juiceshop attempt
-    // let env_vars: Vec<CString> = vec![
-    //     CString::new("LD_LIBRARY_PATH=/usr/lib:/usr/lib64:/usr/local/lib").unwrap(),
-    //     CString::new("HOME=/").unwrap(),
-    // ];
-
-    // Log the environment variables if any
     let env_vars: Vec<CString> = config.env;
-
-    // These  were in attempt for webgoat
-    // let env_vars: Vec<CString> = vec![
-    //     CString::new("LD_LIBRARY_PATH=/usr/lib/jvm/java-17-openjdk-amd64/lib").unwrap(),
-    //     CString::new("JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64").unwrap(),
-    //     CString::new("HOME=/").unwrap(),
-    // ];
-
     log::debug!("Environment variables: {:?}", env_vars);
 
     match execve::<CString, CString>(&config.path, &config.argv, &env_vars) {
@@ -77,7 +62,6 @@ fn child(config: ContainerOpts) -> isize {
     }
 
 }
-
 
 pub fn generate_child_process(config: ContainerOpts) -> Result<Pid, Errcode> {
     let mut tmp_stack: [u8; STACK_SIZE] = [0; STACK_SIZE];

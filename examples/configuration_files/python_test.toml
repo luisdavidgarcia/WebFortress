@@ -2,6 +2,7 @@ debug = true
 uid = 0
 mount_dir = "./mountdir/website"
 command = "/bin/python3 -m http.server 3000"
+env = []
 additional_paths = [
     "/lib64:/lib64",
     "/lib:/lib",
