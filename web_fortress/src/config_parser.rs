@@ -9,6 +9,7 @@ pub struct Config {
     pub uid: u32,
     pub mount_dir: PathBuf,
     pub command: String,
+    pub env: Vec<String>,
     pub additional_paths: Vec<String>,
 }
 

@@ -50,6 +50,11 @@ pub fn parse_args() -> Result<Config, Errcode> {
                 .value_of("command")
                 .unwrap_or_default()
                 .to_string(),
+            env: matches
+                .values_of("env")
+                .unwrap_or_default()
+                .map(|s| s.to_string())
+                .collect(),
             uid: matches
                 .value_of("uid")
                 .unwrap_or_default()
