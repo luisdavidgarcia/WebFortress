@@ -1,4 +1,3 @@
-// This is module that has allow by defaultm, we want it loss for now to test DVWA
 use crate::errors::Errcode;
 
 const EPERM: u16 = 1;
