@@ -18,7 +18,8 @@ Cargo.lock
 mountdir/
 dvwa_dir/
 webgoat_dir/
-apache_dir
+apache_dir/
+apache_utils/
 
 bash
 

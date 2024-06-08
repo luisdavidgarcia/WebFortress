@@ -2,7 +2,6 @@ debug = true
 uid = 0
 mount_dir = "./juice-shop"
 command = "/usr/bin/npm start -- --host 172.18.0.2"
-command = "/usr/bin/npm audit --audit-level=high"
 
 env = [
     "LD_LIBRARY_PATH=/usr/lib:/usr/lib64:/usr/local/lib",

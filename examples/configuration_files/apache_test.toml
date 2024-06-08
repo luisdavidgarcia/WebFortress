@@ -11,5 +11,10 @@ additional_paths = [
     "/bin:/bin",
     "/usr/bin:/usr/bin",
     "/lib/x86_64-linux-gnu/:/lib/x86_64-linux-gnu/",
-    "/etc:/etc"
+    "/etc:/etc",
+    "/usr/include:/usr/include",
+    "/usr/share:/usr/share",
+    "/usr/sbin:/usr/sbin",
+    "/usr/local:/usr/local",
+    "/sbin:/sbin"
 ]
