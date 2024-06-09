@@ -86,3 +86,14 @@ Download both:
 - apr-util-1.6.3.tar.gz
 - apr-1.7.4.tar.gz
 
+## Helpful Troubleshooting Sites
+
+1. https://www.linuxfromscratch.org/blfs/view/svn/general/apr.html
+2. https://docs.oracle.com/cd/B13789_01/server.101/q20201/install.html
+3. https://www.linuxfromscratch.org/blfs/view/svn/general/apr-util.html
+4. https://stackoverflow.com/questions/13967114/configure-error-apr-not-found-please-read-the-documentation
+5. https://apr.apache.org/download.cgi 
+6. https://archive.apache.org/dist/httpd/ 
+7. https://docs.oracle.com/cd/B13789_01/server.101/q20201/install.html
+8. https://forums.centos.org/viewtopic.php?t=56062 
+
