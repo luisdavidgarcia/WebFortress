@@ -1,0 +1,23 @@
+debug = true
+uid = 0
+mount_dir = "./ftp_dir"
+command = "/bin/bash"
+env = []
+
+additional_paths = [
+    "/lib64:/lib64",
+    "/lib:/lib",
+    "/usr/lib:/usr/lib",
+    "/usr/lib64:/usr/lib64",
+    "/bin:/bin",
+    "/usr/bin:/usr/bin",
+    "/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu",
+    "/usr/include:/usr/include",
+    "/usr/share:/usr/share",
+    "/usr/sbin:/usr/sbin",
+    "/usr/local:/usr/local",
+    "/sbin:/sbin",
+    "/var/ftp:/var/ftp",
+    "/var:/var",
+    "/etc:/etc",
+]
