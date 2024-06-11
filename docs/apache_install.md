@@ -40,8 +40,31 @@ Prior to this you have to make these in the host:
  sudo chown -R 10000:10000 /usr/local/apache2/
 ```
 
+Download and Extract APR and APR-Util
+
+    Download APR and APR-Util:
+    Download the APR and APR-Util source packages.
+
 ```sh
-./configure --prefix=/usr/local/apache2 --with-pcre=/usr/local/pcre/make 
+
+wget https://archive.apache.org/dist/apr/apr-1.7.0.tar.gz
+wget https://archive.apache.org/dist/apr/apr-util-1.6.1.tar.gz
+```
+
+Extract APR and APR-Util:
+Extract the downloaded tarballs and place them in the srclib directory of the Apache source tree.
+
+```sh
+
+tar -xvzf apr-1.7.0.tar.gz
+tar -xvzf apr-util-1.6.1.tar.gz
+mv apr-1.7.0 httpd-2.4.49/srclib/apr
+mv apr-util-1.6.1 httpd-2.4.49/srclib/apr-util
+```
+
+```sh
+bash ./configure --prefix=/usr/local/apache2 --with-pcre=/usr/local/pcre/bin/pcre-config --with-included-apr
+export PATH=$PATH:/usr/bin
 make
 make install
 ```

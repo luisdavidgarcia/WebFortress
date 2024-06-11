@@ -45,6 +45,10 @@ apache_test:
 	cargo build
 	sudo $(BIN) --config configuration_files/apache_test.toml
 
+apache_new_test:
+	cargo build
+	sudo $(BIN) --config configuration_files/apache_new_test.toml
+	
 ftp_test:
 	cargo build
 	sudo $(BIN) --config configuration_files/ftp_test.toml

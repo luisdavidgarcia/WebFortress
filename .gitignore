@@ -31,3 +31,7 @@ docker_materials/
 *.jar
 
 juice-shop
+
+vsftp*
+
+*tar.gz
