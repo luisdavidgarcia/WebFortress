@@ -1,7 +1,7 @@
 debug = true
 uid = 0
 mount_dir = "./apache_new_dir"
-command = "/bin/bash"
+command = "./start_apache_and_tail_log.sh"
 env = []
 additional_paths = [
     "/lib64:/lib64",
