@@ -2,9 +2,12 @@ debug = true
 uid = 0
 mount_dir = "./juice-shop"
 command = "/usr/bin/npm start -- --host 172.18.0.2"
+
 env = [
     "LD_LIBRARY_PATH=/usr/lib:/usr/lib64:/usr/local/lib",
     "HOME=/",
+    "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64",
+    "PATH=/usr/lib/jvm/java-17-openjdk-amd64/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
 ]
 additional_paths = [
     "/lib/x86_64-linux-gnu:/lib/x86_64-linux-gnu",
@@ -14,6 +17,8 @@ additional_paths = [
     "/usr/lib64:/usr/lib64",
     "/bin:/bin",
     "/usr/bin:/usr/bin",
-    "/usr/local/bin:/usr/local/bin", 
-    "/usr/local/lib:/usr/local/lib", 
+    "/usr/local/bin:/usr/local/bin",
+    "/usr/local/lib:/usr/local/lib",
+    "/lib/debug:/lib/debug",
+    "/lib/environment.d:/lib/environment.d",
 ]

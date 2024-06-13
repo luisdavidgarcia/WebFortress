@@ -2,7 +2,7 @@ debug = true
 uid = 0
 mount_dir = "./dvwa_dir"
 command = "./Install-DVWA.sh"
-
+env = []
 additional_paths = [
     "/lib64:/lib64:ro",
     "/lib:/lib:ro",

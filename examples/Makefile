@@ -41,6 +41,18 @@ create_mountdir:
 	mkdir -p mountdir
 	cp /bin/bash ./mountdir/
 
+apache_test:
+	cargo build
+	sudo $(BIN) --config configuration_files/apache_test.toml
+
+apache_new_test:
+	cargo build
+	sudo $(BIN) --config configuration_files/apache_new_test.toml
+	
+ftp_test:
+	cargo build
+	sudo $(BIN) --config configuration_files/ftp_test.toml
+
 clean_network:
 	sudo ip addr del 172.18.0.1/24 dev veth0
 	sudo ip link delete veth0

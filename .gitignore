@@ -18,6 +18,9 @@ Cargo.lock
 mountdir/
 dvwa_dir/
 webgoat_dir/
+apache_dir/
+apache_utils/
+*_dir/
 
 bash
 
@@ -28,3 +31,7 @@ docker_materials/
 *.jar
 
 juice-shop
+
+vsftp*
+
+*tar.gz

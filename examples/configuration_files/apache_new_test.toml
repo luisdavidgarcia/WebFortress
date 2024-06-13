@@ -1,0 +1,18 @@
+debug = true
+uid = 0
+mount_dir = "./apache_new_dir"
+command = "./start_apache_and_tail_log.sh"
+env = []
+additional_paths = [
+    "/lib64:/lib64",
+    "/lib:/lib",
+    "/usr/lib:/usr/lib",
+    "/usr/lib64:/usr/lib64",
+    "/lib/x86_64-linux-gnu/:/lib/x86_64-linux-gnu/",
+    "/etc/apache2:/etc/apache2",
+    "/usr/include:/usr/include",
+    "/usr/share:/usr/share",
+    "/usr/sbin:/usr/sbin",
+    "/sbin:/sbin",
+    "/usr/local:/usr/local",
+]
