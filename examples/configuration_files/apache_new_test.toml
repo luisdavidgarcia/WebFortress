@@ -8,13 +8,11 @@ additional_paths = [
     "/lib:/lib",
     "/usr/lib:/usr/lib",
     "/usr/lib64:/usr/lib64",
-    "/bin:/bin",
-    "/usr/bin:/usr/bin",
     "/lib/x86_64-linux-gnu/:/lib/x86_64-linux-gnu/",
-    "/etc:/etc",
+    "/etc/apache2:/etc/apache2",
     "/usr/include:/usr/include",
     "/usr/share:/usr/share",
     "/usr/sbin:/usr/sbin",
+    "/sbin:/sbin",
     "/usr/local:/usr/local",
-    "/sbin:/sbin"
 ]
