@@ -1,10 +1,12 @@
-# WebFortress
+# WebFortress 🦀
+
+
 
 WebFortress is an educational project aimed at creating a straightforward container-based system leveraging Rust's performance and safety features. This project serves as a practical exploration into the fundamentals of containerization and virtualization technologies, simulating a minimalistic version of Docker-like functionality. By developing a basic container system, contributors and learners can gain hands-on experience with the underlying mechanisms that enable containerization, such as namespaces and cgroups, all within the context of Rust's ecosystem. This initiative not only fosters a deeper understanding of operating system concepts but also showcases the versatility of Rust in system-level programming tasks.
 
 ## Project Members
 
-- Luis David Garcia ([lgarc120@calpoly.edu](mailto:lgarc120@calpoly.edu))
+- Luis David Garcia ([lgarc120@calpoly.edu](mailto:lgarc120@calpoly.edu))🦀
 - Paul Jarski ([pjarski@calpoly.edu](mailto:pjarski@calpoly.edu))
 - Taran Dhillon ([tsingh30@calpoly.edu](mailto:tsingh30@calpoly.edu))
 
