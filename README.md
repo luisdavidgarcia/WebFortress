@@ -2,11 +2,12 @@
 
 ![Banner of WebFortress](./WebFortress_Banner.webp)
 
-WebFortress is an educational project aimed at creating a straightforward container-based system leveraging Rust’s performance and safety features. The project explores the fundamentals of containerization and virtualization technologies, simulating a minimalistic version of Docker-like functionality. By developing a basic container system, it provides hands-on experience with the core mechanisms that enable containerization, such as namespaces, cgroups, and process isolation, all implemented within Rust’s ecosystem.
+**WebFortress** is an educational project aimed at creating a straightforward container-based system leveraging Rust's performance and safety features. The project explores the fundamentals of containerization and virtualization technologies, simulating a minimalistic version of Docker-like functionality. By developing a basic container system, it provides hands-on experience with the core mechanisms that enable containerization, such as namespaces, cgroups, and process isolation, all implemented within Rust’s ecosystem.
 
-To validate the effectiveness of WebFortress in isolating processes and mitigating vulnerabilities, the project included rigorous testing against known Remote Code Execution (RCE) vulnerabilities in Apache HTTP Server versions 2.4.49 (CVE-2021-41773) and 2.4.50 (CVE-2021-42013). These vulnerabilities exploit path traversal in specific server configurations, allowing arbitrary file reads and potential code execution.
+To validate the effectiveness of WebFortress in isolating processes and mitigating vulnerabilities, the project included rigorous testing against known Remote Code Execution (RCE) vulnerabilities in **Apache HTTP Server versions 2.4.49 ([CVE-2021-41773](https://nvd.nist.gov/vuln/detail/cve-2021-41773))** and **2.4.50 ([CVE-2021-42013](https://nvd.nist.gov/vuln/detail/cve-2021-42013))**. These vulnerabilities exploit path traversal in specific server configurations, allowing arbitrary file reads and potential code execution.
 
 WebFortress successfully contained these exploits by enforcing strict namespace isolation and preventing the attack from affecting the host system. This test demonstrates the container’s resilience to real-world security threats and highlights Rust’s ability to create secure and reliable system-level applications. Through this initiative, WebFortress not only fosters a deeper understanding of containerization concepts but also showcases practical applications of Rust in designing robust and secure computing environments.
+
 ## Project Members
 
 - Luis David Garcia ([lgarc120@calpoly.edu](mailto:lgarc120@calpoly.edu))
