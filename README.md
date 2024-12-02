@@ -8,7 +8,7 @@ To validate the effectiveness of WebFortress in isolating processes and mitigati
 
 WebFortress successfully contained this exploit by enforcing strict namespace isolation and preventing the attack from affecting the host system. This test demonstrates the container’s resilience to real-world security threats and highlights Rust’s ability to create secure and reliable system-level applications. Through this initiative, WebFortress not only fosters a deeper understanding of containerization concepts but also showcases practical applications of Rust in designing robust and secure computing environments.
 
-
+For more technical details, please refer to the full report available in the [main branch](./CSC550_WebFortress_A_Secure_Web_Server_Container.pdf) of the repository.
 
 ## Project Members
 
